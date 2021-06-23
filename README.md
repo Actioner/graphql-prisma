@@ -88,7 +88,7 @@ graphQL:query query FeedSearchQuery($filter: String!) {
 graphQL:variables { filter: 'awesome graphql' }
 ```
 
-Here is a visual representation of the `hackernews-code/src/schema.graphql`, this file describes the GraphQL schema which defines the types and fields supported.
+Here is a visual representation of the `hackernews-code/src/schema.graphql`, this file describes the GraphQL schema which defines the types and fields supported by the underlying model.
 
 ![Feed Search Query](docs/img/feed-search-query.png)
 
@@ -127,7 +127,7 @@ prisma:client  +0ms
 
 Prisma Client generates the following SQL statement to retrieve the `Link` objects that matches the query.
 
-> **Note:** since no properties where specified on the `select` option to `findMany`, all properties are returned.
+> **Note:** since no properties where specified on the `select` option of `findMany`, all properties are returned.
 
 ```bash
 prisma:query SELECT `main`.`Link`.`id`, `main`.`Link`.`createdAt`, `main`.`Link`.`description`, `main`.`Link`.`url`, `main`.`Link`.`postedById` FROM `main`.`Link` WHERE (`main`.`Link`.`description` LIKE ? OR 
@@ -181,7 +181,7 @@ prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`ema
 ...
 ```
 
-Since we are expanding the `votes` property on the type `Link`. It proceeds the same way as before, since there is at least a vote casted for this `Link`.
+The `votes` property also gets expanded on the type `Link`. It proceeds the same way as before, becuase at least one vote was cast for this `Link`.
 
 ```bash
 prisma:client Generated request: +1ms
@@ -207,3 +207,7 @@ prisma:query SELECT `main`.`Vote`.`id`, `main`.`Vote`.`linkId`, `main`.`Vote`.`u
 prisma:query SELECT `main`.`Vote`.`id`, `main`.`Vote`.`userId` FROM `main`.`Vote` WHERE `main`.`Vote`.`id` = ? LIMIT ? OFFSET ?
 prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`email`, `main`.`User`.`password` FROM `main`.`User` WHERE `main`.`User`.`id` IN (?) LIMIT ? OFFSET ?
 ```
+
+## Summary
+
+In this demo we reviewed how GraphQL queries are matched to its schema. Then we took a look on how the resolver function interacts with the Prisma Client to map the requested type. Finally, we explored how the SQL Statements are generated and used to retrieve the information requested from the database.
