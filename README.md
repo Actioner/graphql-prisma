@@ -48,7 +48,23 @@ const prisma = new PrismaClient({
 });
 ```
 
-## TODO: run the demo
+## Run the demo
+
+1. Open a terminal, install the dependencies and run the `hackernews-code` component
+
+```bash
+cd hackernews-code
+npm install
+node src/index.js
+```
+
+2. Open another terminal, install the dependencies and run the `hackernews-react-apollo` component
+
+```bash
+cd hackernews-react-apollo
+yarn install
+yarn start
+```
 
 ## Trace a search request
 
