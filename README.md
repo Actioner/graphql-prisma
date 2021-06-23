@@ -6,13 +6,13 @@ Full stack demo using [Prisma.io](https://www.prisma.io/). Focusing on debugging
 
 This solution consists of two components.
 
-- `hackernews-code` is based on [hackernews-graphql-js](https://github.com/howtographql/graphql-js) repository and it serves as the backend enabled GraphQL Server and Prisma Client.
+- `hackernews-code` is based on [hackernews-graphql-js](https://github.com/howtographql/graphql-js) repository and it serves as the backend GraphQL Server and Prisma Client enabled.
 
 - `hackernews-react-apollo` is based on [react-apollo](https://github.com/howtographql/react-apollo) repository and it is the frontend client that will consume the `hackernews-code` exposed GraphQL services.
 
 ## Enable debugging
 
-The main goal of this demo is to showcase the how GraphQL.js queries are translated into Prisma queries and in turn to SQL queries.
+The main goal of this demo is to showcase how GraphQL.js queries are translated into Prisma queries and in turn to SQL queries. So for that we are going to enable debugging in these three areas.
 
 ### Tracing GraphQL request queries
 
@@ -32,7 +32,7 @@ const server = new ApolloServer({
 
 ### Tracing Prisma Client requests
 
-We enable set the environment variable `DEBUG` to enable debugging.
+We set the environment variable `DEBUG` to enable debugging.
 
 ```bash
 export DEBUG="prisma:client"
@@ -54,9 +54,9 @@ const prisma = new PrismaClient({
 
 > **Note:** tracing is enabled in the `hackernews-code` component. 
 
-1. First we navigate to [http://localhost:3000/search](http://localhost:3000/search) and enter a search term. We are going to search for `awesome graphql`.
+First we navigate to [http://localhost:3000/search](http://localhost:3000/search) and enter a search term. In tnis demo we are going to search for `awesome graphql`.
 
-The following request is received that uses the `FeedSearchQuery` method to return a query type.
+The following GraphQL request is received that uses the `FeedSearchQuery` method to return a query type.
 
 ```bash
 graphQL:query query FeedSearchQuery($filter: String!) {
@@ -96,7 +96,7 @@ From the diagram we see that we are requesting a type `Query`, which in turn inc
 
 The type `Query` has a feed resolver defined on `hackernews-code/src/resolvers/Query.js` that calls the Prisma Client methods `findMany` and `count` on the class `link`. We see these first-level resolved calls next in the console output as Prisma Client generated requests.
 
-> **Note: The `filter` variable has been replaced by the search term
+> **Note:** The `filter` variable has been replaced by the search term
 
 ```bash
 prisma:client Generated request: +2ms
@@ -125,7 +125,7 @@ prisma:client }
 prisma:client  +0ms
 ```
 
-Prisma Client generates the following SQL statement to retrieve the `Link` objects that matches the query. `filter` is replaced by the first positional parameter in the LIKE expression.
+Prisma Client generates the following SQL statement to retrieve the `Link` objects that matches the query.
 
 > **Note:** since no properties where specified on the `select` option to `findMany`, all properties are returned.
 
@@ -140,7 +140,7 @@ Similarly the `count` request is generated that translates to the following SQL 
 prisma:query SELECT COUNT(*) FROM (SELECT `main`.`Link`.`id` FROM `main`.`Link` WHERE (`main`.`Link`.`description` LIKE ? OR `main`.`Link`.`url` LIKE ?) LIMIT ? OFFSET ?) AS `sub`
 ```
 
-Since at least one result was found Prisma Client proceeds to expand the `Link` object by using the `findUnique` method by `Link` and expanding `postedBy` and `votes`.
+Since at least one result was found, Prisma Client proceeds to expand the `Link` object by using the `findUnique` method and expanding `postedBy` and `votes`.
 
 ```javascript 
 prisma:client Generated request: +2ms
@@ -181,7 +181,7 @@ prisma:query SELECT `main`.`User`.`id`, `main`.`User`.`name`, `main`.`User`.`ema
 ...
 ```
 
-Since we are expanding the `votes` property on the type `Link`, and this one in particular has a vote. It proceeds the same way as before.
+Since we are expanding the `votes` property on the type `Link`. It proceeds the same way as before, since there is at least a vote casted for this `Link`.
 
 ```bash
 prisma:client Generated request: +1ms
@@ -200,7 +200,7 @@ prisma:client }
 prisma:client  +1ms
 ```
 
-Prisma Client generates the following SQL statement to retrieve the `User` object that posted the `Link`. Note that two statements are generated for this, the first one retrieves the `postedById` that identifies the `User` that posted the `Link` and next is the query to retrieve the `User` itself.
+Prisma Client generates the following SQL statement to retrieve the `Vote` objects that voted the `Link`. With the `Vote` id, the voting `User` id is retrieved and lastly the voting `User` is retrieved.
 
 ```bash
 prisma:query SELECT `main`.`Vote`.`id`, `main`.`Vote`.`linkId`, `main`.`Vote`.`userId` FROM `main`.`Vote` WHERE `main`.`Vote`.`linkId` IN (?) LIMIT ? OFFSET ?
