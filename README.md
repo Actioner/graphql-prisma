@@ -189,7 +189,7 @@ prisma:client }
 prisma:client  +0ms
 ```
 
-Prisma Client generates the following SQL statement to retrieve the `User` object that posted the `Link`. Note that two statements are generated for this, the first one retrieves the `postedById` that identifies the `User` that posted the `Link` and next is the query to retrieve the `User` itself.
+Prisma Client generates the following SQL statement to retrieve the `User` record that posted the `Link`. Note that two statements are generated for this, the first one retrieves the `postedById` that identifies the `User` that posted the `Link` and next is the query to retrieve the `User` itself.
 
 ```bash
 prisma:query SELECT `main`.`Link`.`id`, `main`.`Link`.`postedById` FROM `main`.`Link` WHERE `main`.`Link`.`id` = ? LIMIT ? OFFSET ?
@@ -216,7 +216,7 @@ prisma:client }
 prisma:client  +1ms
 ```
 
-Prisma Client generates the following SQL statement to retrieve the `Vote` objects that voted the `Link`. With the `Vote` id, the voting `User` id is retrieved and lastly the voting `User` is retrieved.
+Prisma Client generates the following SQL statement to retrieve the `Vote` records that voted for the `Link`. With the `Vote` id, the voting `userId` is fetch, and with it the `User` record is retrieved from the database.
 
 ```bash
 prisma:query SELECT `main`.`Vote`.`id`, `main`.`Vote`.`linkId`, `main`.`Vote`.`userId` FROM `main`.`Vote` WHERE `main`.`Vote`.`linkId` IN (?) LIMIT ? OFFSET ?
